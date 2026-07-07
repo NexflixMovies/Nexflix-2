@@ -176,7 +176,6 @@
     <a class="logo-text" href="#">NEXFLIX</a>
   </div>
   <div style="display:flex;align-items:center;gap:8px">
-    <div class="topbar-dl-count" id="dlCountBadge">2 Downloads Left</div>
     <div class="topbar-search" onclick="document.getElementById('moviesSearch').focus()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     </div>
@@ -238,15 +237,17 @@
 <div class="movies-grid" id="moviesGrid"></div>
 
 <!-- ══════════════════════════════════════════
-     DOWNLOAD LIMIT MODAL
+     CLICK-AD BOX — appears when user clicks a movie.
+     Paste your ad code inside .click-ad-zone below.
 ══════════════════════════════════════════ -->
-<div class="modal-overlay" id="dlLimitModal">
-  <div class="modal-box" style="position:relative">
-    <button class="modal-close" onclick="document.getElementById('dlLimitModal').classList.remove('show')" style="position:absolute">&#215;</button>
-    <div style="font-size:2.5rem;margin-bottom:12px">&#128274;</div>
-    <div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:8px">Daily Limit Reached</div>
-    <div style="font-size:.8rem;color:var(--muted);line-height:1.65">You've used your 2 free downloads today. Come back tomorrow!</div>
-    <div style="font-size:.72rem;color:#444;margin-top:10px">&#9201;&nbsp;Resets at midnight</div>
+<div id="clickAdBox" style="position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:linear-gradient(160deg,#0f0f1e,#080812);border:1px solid rgba(59,130,246,.3);border-radius:18px;padding:20px;max-width:360px;width:100%;position:relative;animation:modalIn .3s cubic-bezier(.34,1.56,.64,1)">
+    <button onclick="closeClickAd()" style="position:absolute;top:10px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">&#215;</button>
+    <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:10px;text-align:center">Advertisement</div>
+    <div class="click-ad-zone" style="min-height:120px;display:flex;align-items:center;justify-content:center">
+      <!-- AD SLOT #6 — Click-ad (shows on every movie click). Paste your ad script here. -->
+    </div>
+    <button onclick="closeClickAd()" style="margin-top:14px;width:100%;padding:10px;border-radius:8px;border:none;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;font-size:.85rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Watch Now &#9654;</button>
   </div>
 </div>
 
@@ -270,7 +271,6 @@
 /* ══════════════════════════════════════
    SETTINGS — edit these if needed
 ══════════════════════════════════════ */
-var DL_FREE       = 2;           // free downloads per day
 var TIMED_AD_MIN  = 5;           // minutes between popup ad boxes
 
 /* ── Merge admin-added movies from localStorage ── */
@@ -278,27 +278,6 @@ try {
   var adminMovies = JSON.parse(localStorage.getItem('_nx_admin_movies') || '[]');
   if(adminMovies.length) MOVIES = MOVIES.concat(adminMovies);
 } catch(e){}
-
-/* ── Download limit ── */
-var DL_KEY  = '_nx_dl_count';
-var DL_DATE = '_nx_dl_date';
-
-function getDlCount(){
-  if(localStorage.getItem(DL_DATE) !== new Date().toDateString()){
-    localStorage.setItem(DL_DATE, new Date().toDateString());
-    localStorage.setItem(DL_KEY, '0');
-    return 0;
-  }
-  return parseInt(localStorage.getItem(DL_KEY)||'0',10);
-}
-function incDlCount(){ localStorage.setItem(DL_KEY, String(getDlCount()+1)); updateDlUI(); }
-function canDownload(){ return getDlCount() < DL_FREE; }
-function updateDlUI(){
-  var used = getDlCount();
-  var left = Math.max(0, DL_FREE - used);
-  var b = document.getElementById('dlCountBadge');
-  if(b) b.textContent = left > 0 ? left+' Download'+(left===1?'':'s')+' Left' : 'Limit Reached';
-}
 
 /* ── Timed ad box ── */
 var _adTimer = null;
@@ -350,20 +329,25 @@ window.setFilter = function(g, btn){
   renderGrid();
 };
 
-/* ── Open movie/series ── */
-function openMovie(slug){
-  if(!canDownload()){
-    document.getElementById('dlLimitModal').classList.add('show');
-    return;
-  }
-  incDlCount();
-  var m = MOVIES.find(function(x){ return x.slug === slug; });
+/* ── Click-ad box ── */
+var _pendingSlug = null;
+window.closeClickAd = function(){
+  document.getElementById('clickAdBox').style.display = 'none';
+  if(!_pendingSlug) return;
+  var m = MOVIES.find(function(x){ return x.slug === _pendingSlug; });
+  _pendingSlug = null;
   if(!m) return;
   if(m.type === 'series'){
-    window.location.href = 'player-series.html?slug=' + encodeURIComponent(slug);
+    window.location.href = 'player-series.html?slug=' + encodeURIComponent(m.slug);
   } else {
-    window.location.href = 'player-movie.html?slug=' + encodeURIComponent(slug);
+    window.location.href = 'player-movie.html?slug=' + encodeURIComponent(m.slug);
   }
+};
+
+/* ── Open movie — show ad box first ── */
+function openMovie(slug){
+  _pendingSlug = slug;
+  document.getElementById('clickAdBox').style.display = 'flex';
 }
 
 /* ── Render grid ── */

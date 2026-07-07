@@ -10,7 +10,7 @@ var MOVIES = [
     desc: "The true story of Jaswant Singh Khalra, a Punjabi human rights activist who exposed the illegal cremations of thousands of Sikhs by the Punjab Police in the 1990s. Starring Diljit Dosanjh in a powerful performance.",
     tier: "free",
     /* Bunny.net Video ID — paste your video ID below */
-    bunnyVideoId: "YOUR_VIDEO_ID_HERE",
+    bunnyVideoId: "f9252aa5-a267-427d-981b-61dcdbaa15b2",
     downloadLink: ""
   }
 

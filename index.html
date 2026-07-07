@@ -133,7 +133,26 @@
     .empty-state{grid-column:1/-1;text-align:center;padding:50px 20px;color:#2a2a45}
     .empty-state p{font-size:.85rem;margin-top:8px}
 
-    @media(max-width:380px){.movies-grid{grid-template-columns:repeat(2,1fr)}}
+    .movies-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+@media (max-width:768px){
+    .movies-grid{
+        grid-template-columns:repeat(2,1fr);
+        gap:16px;
+    }
+
+    .movie-card-title{
+        font-size:.9rem;
+    }
+
+    .movie-card-sub{
+        font-size:.75rem;
+    }
+}
   </style>
 </head>
 <body>

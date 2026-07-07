@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>NEXFLIX — Free Movies &amp; Web Series</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+
+
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#07070f;--card:#111120;--border:#1c1c2e;
+      --blue:#3b82f6;--blue-d:#1d4ed8;--blue-glow:rgba(59,130,246,.35);
+      --text:#e8e8f2;--muted:#6b7280;--green:#22c55e;--red:#e53935;
+    }
+    html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#0a0a14}::-webkit-scrollbar-thumb{background:#215eb3;border-radius:3px}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    @keyframes dotB{0%,80%,100%{transform:translateY(0);opacity:.3}40%{transform:translateY(-7px);opacity:1}}
+    @keyframes modalIn{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    @keyframes hotPulse{0%,100%{box-shadow:0 0 0 0 rgba(229,57,53,.4)}70%{box-shadow:0 0 0 8px rgba(229,57,53,0)}}
+    @keyframes navOpen{from{clip-path:circle(0% at 0% 0%);opacity:.6}to{clip-path:circle(160% at 0% 0%);opacity:1}}
+    @keyframes navClose{from{clip-path:circle(160% at 0% 0%);opacity:1}to{clip-path:circle(0% at 0% 0%);opacity:0}}
+
+    /* ── LOADER ── */
+    #nx-loader{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .4s}
+    #nx-loader.hidden{opacity:0;pointer-events:none}
+    .loader-dots{display:flex;gap:5px}
+    .loader-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);animation:dotB 1.2s ease-in-out infinite}
+    .loader-dot:nth-child(2){animation-delay:.15s}.loader-dot:nth-child(3){animation-delay:.3s}
+
+    /* ── TOPBAR ── */
+    .topbar{position:sticky;top:0;z-index:200;height:56px;background:rgba(7,7,15,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;gap:10px}
+    .topbar-left{display:flex;align-items:center;gap:10px}
+    .logo-text{font-size:1.4rem;font-weight:900;color:var(--blue);letter-spacing:-1px;text-decoration:none;text-shadow:0 0 18px var(--blue-glow)}
+    .ham-btn{width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:rgba(255,255,255,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:.2s}
+    .ham-btn:hover{background:rgba(255,255,255,.08)}
+    .ham-line{width:18px;height:2px;background:#999;border-radius:2px;transition:.25s}
+    .ham-btn.open .ham-line:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .ham-btn.open .ham-line:nth-child(2){opacity:0;transform:scaleX(0)}
+    .ham-btn.open .ham-line:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+    .topbar-dl-count{font-size:.7rem;font-weight:700;color:var(--green);background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);padding:3px 9px;border-radius:100px;white-space:nowrap}
+    .topbar-search{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#666;transition:.2s}
+    .topbar-search:hover{background:rgba(255,255,255,.08);color:#ccc}
+
+    /* ── NAV DRAWER ── */
+    .nav-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .3s}
+    .nav-overlay.show{opacity:1;pointer-events:all}
+    .nav-drawer{position:fixed;left:0;top:0;height:100%;width:min(280px,80vw);z-index:301;background:linear-gradient(160deg,#0d0d1e,#080814);border-right:1px solid var(--border);display:flex;flex-direction:column;clip-path:circle(0% at 0% 0%);pointer-events:none;transition:.35s}
+    .nav-drawer.opening{clip-path:circle(160% at 0% 0%);pointer-events:all;animation:navOpen .45s cubic-bezier(.4,0,.2,1) forwards}
+    .nav-drawer.open{clip-path:circle(160% at 0% 0%);pointer-events:all}
+    .nav-drawer.closing{animation:navClose .32s cubic-bezier(.4,0,.2,1) forwards}
+    .nav-head{display:flex;align-items:center;justify-content:space-between;padding:18px 16px 14px;border-bottom:1px solid var(--border)}
+    .nav-logo{display:flex;align-items:center;gap:8px}
+    .nav-logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--blue-d),var(--blue));display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#fff}
+    .nav-logo-name{font-size:1.1rem;font-weight:900;color:#fff;letter-spacing:-.5px}
+    .nav-logo-name span{color:var(--blue)}
+    .nav-close-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:#555;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:.2s}
+    .nav-close-btn:hover{color:#ccc}
+    .nav-items{flex:1;padding:10px;overflow-y:auto}
+    .nav-section-label{font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#2a2a45;padding:12px 8px 6px}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:10px;cursor:pointer;color:#666;transition:.18s;margin-bottom:2px}
+    .nav-item:hover{background:rgba(255,255,255,.05);color:#aaa}
+    .nav-item.active{background:rgba(59,130,246,.1);color:var(--blue)}
+    .nav-icon{width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+    .nav-item-label{flex:1;font-size:.88rem;font-weight:600}
+
+    /* ── SEARCH BAR ── */
+    .search-bar{padding:12px 14px 8px;position:sticky;top:56px;z-index:100;background:var(--bg)}
+    .search-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.88rem;padding:10px 14px;outline:none;transition:border-color .2s;font-family:'Inter',sans-serif}
+    .search-input:focus{border-color:rgba(59,130,246,.5)}
+    .search-input::placeholder{color:#2e2e45}
+
+    /* ── AD SLOT (banner after search) ── */
+    .ad-slot{display:flex;justify-content:center;align-items:center;padding:6px 0;min-height:60px;background:var(--bg)}
+
+    /* ── GENRE FILTER ── */
+    .filter-row{display:flex;gap:7px;overflow-x:auto;padding:6px 14px 10px;scrollbar-width:none}
+    .filter-row::-webkit-scrollbar{display:none}
+    .filter-pill{flex-shrink:0;padding:6px 14px;border-radius:100px;font-size:.73rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:rgba(255,255,255,.04);color:#555;transition:.18s;font-family:'Inter',sans-serif}
+    .filter-pill.active{background:rgba(59,130,246,.14);border-color:rgba(59,130,246,.4);color:var(--blue)}
+    .filter-pill:hover{color:#aaa}
+
+    /* ── MOVIES GRID ── */
+    .movies-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:0 14px 80px;animation:fadeUp .35s ease}
+    .movie-grid-card{cursor:pointer;border-radius:10px;overflow:hidden;background:var(--card);border:1px solid var(--border);transition:transform .2s,border-color .2s}
+    .movie-grid-card:hover{transform:scale(1.03);border-color:#2a2a40}
+    .movie-thumb{position:relative;aspect-ratio:2/3;overflow:hidden}
+    .movie-thumb-bg{position:absolute;inset:0;background:linear-gradient(160deg,var(--c1,#1a1a3a),var(--c2,#0a0a1a))}
+    .movie-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+    .movie-badge{position:absolute;top:6px;left:6px;color:#fff;font-size:.52rem;font-weight:800;padding:2px 6px;border-radius:4px;z-index:3;letter-spacing:.05em;text-transform:uppercase}
+    .badge-hot{background:#e53935}
+    .badge-new{background:#22c55e;color:#000}
+    .badge-top10{background:var(--blue)}
+    .badge-recent{background:#f59e0b;color:#000}
+    .movie-match{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.75);color:#facc15;font-size:.58rem;font-weight:700;padding:2px 5px;border-radius:4px;z-index:3}
+    .movie-card-info{padding:7px 7px 9px}
+    .movie-card-title{font-size:.72rem;font-weight:700;color:#ccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .movie-card-sub{font-size:.62rem;color:#444;margin-top:2px}
+
+    /* ── MID-PAGE AD SLOT (appears after every N rows) ── */
+    .ad-mid-slot{display:flex;justify-content:center;align-items:center;padding:10px 0;min-height:100px;background:var(--bg);grid-column:1/-1}
+
+    /* ── TIMED AD BOX (every 5 min) ── */
+    #timedAdBox{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
+    #timedAdBox.show{display:flex}
+    .timed-ad-inner{background:linear-gradient(160deg,#0f0f1e,#080812);border:1px solid rgba(59,130,246,.3);border-radius:18px;padding:20px;max-width:360px;width:100%;position:relative;animation:modalIn .3s cubic-bezier(.34,1.56,.64,1)}
+    .timed-ad-close{position:absolute;top:10px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+    .timed-ad-close:hover{background:rgba(255,255,255,.2)}
+    .timed-ad-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:10px;text-align:center}
+    .timed-ad-zone{min-height:100px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+
+    /* ── DOWNLOAD LIMIT MODAL ── */
+    .modal-overlay{position:fixed;inset:0;z-index:1500;background:rgba(4,4,12,.92);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.show{display:flex}
+    .modal-box{background:linear-gradient(160deg,#0f0f1e,#080812);border:1px solid var(--border);border-radius:20px;padding:28px 22px;max-width:360px;width:100%;text-align:center;animation:modalIn .35s cubic-bezier(.34,1.56,.64,1)}
+    .modal-close{position:absolute;top:12px;right:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#555;font-size:1rem;width:26px;height:26px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+    .modal-close:hover{color:#ccc}
+
+    /* ── STICKY BOTTOM AD ── */
+    #stickyAd{position:fixed;bottom:0;left:0;width:100%;z-index:400;background:rgba(7,7,15,.97);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:4px 0;box-shadow:0 -2px 12px rgba(0,0,0,.6);min-height:58px}
+    #stickyAdClose{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;text-align:center;line-height:20px}
+
+    /* ── TOAST ── */
+    #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(60px);background:#1a1a2e;border:1px solid #252540;color:#ccc;padding:10px 18px;border-radius:9px;font-size:.8rem;font-weight:600;z-index:9999;transition:transform .3s,opacity .3s;opacity:0;pointer-events:none;white-space:nowrap}
+    #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+    /* ── EMPTY STATE ── */
+    .empty-state{grid-column:1/-1;text-align:center;padding:50px 20px;color:#2a2a45}
+    .empty-state p{font-size:.85rem;margin-top:8px}
+
+    @media(max-width:380px){.movies-grid{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="nx-loader">
+  <div style="font-size:4rem;font-weight:900;color:var(--blue);letter-spacing:-1.5px;text-shadow:0 0 28px var(--blue-glow)">Nexflix</div>
+  <div style="font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#2a3a5a;margin-top:4px">Free Movies &bull; No Signup</div>
+  <div class="loader-dots">
+    <div class="loader-dot"></div>
+    <div class="loader-dot"></div>
+    <div class="loader-dot"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TIMED AD BOX — shows every 5 minutes.
+     Paste your ad code inside .timed-ad-zone below.
+══════════════════════════════════════════ -->
+<div id="timedAdBox">
+  <div class="timed-ad-inner">
+    <button class="timed-ad-close" onclick="closeTimedAd()">&#215;</button>
+    <div class="timed-ad-label">Advertisement</div>
+    <div class="timed-ad-zone"><div id="ad-timed"></div></div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <button class="ham-btn" id="hamBtn" onclick="toggleNav()">
+      <div class="ham-line"></div><div class="ham-line"></div><div class="ham-line"></div>
+    </button>
+    <a class="logo-text" href="#">NEXFLIX</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="topbar-search" onclick="document.getElementById('moviesSearch').focus()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- NAV OVERLAY -->
+<div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
+
+<!-- NAV DRAWER -->
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-head">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">N</div>
+      <div class="nav-logo-name">NEX<span>FLIX</span></div>
+    </div>
+    <button class="nav-close-btn" onclick="closeNav()">&#215;</button>
+  </div>
+  <div class="nav-items">
+    <div class="nav-section-label">Browse</div>
+    <div class="nav-item active" onclick="closeNav()">
+      <span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+      <span class="nav-item-label">Home</span>
+    </div>
+    <div class="nav-item" onclick="window.location.href='admin.html'">
+      <span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg></span>
+      <span class="nav-item-label">Admin Panel</span>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH BAR -->
+<div class="search-bar">
+  <input class="search-input" id="moviesSearch" placeholder="&#128269; Search movies or series..." oninput="renderGrid()"/>
+</div>
+
+<!-- ══════════════════════════════════════════
+     AD SLOT #3 — Banner below search bar.
+     Paste your banner ad script here.
+══════════════════════════════════════════ -->
+<div class="ad-slot"><div id="ad-search"></div></div>
+
+<!-- GENRE FILTER PILLS -->
+<div class="filter-row" id="filterRow">
+  <button class="filter-pill active" onclick="setFilter('',this)">All</button>
+  <button class="filter-pill" onclick="setFilter('Action',this)">Action</button>
+  <button class="filter-pill" onclick="setFilter('Drama',this)">Drama</button>
+  <button class="filter-pill" onclick="setFilter('History',this)">History</button>
+  <button class="filter-pill" onclick="setFilter('Horror',this)">Horror</button>
+  <button class="filter-pill" onclick="setFilter('Thriller',this)">Thriller</button>
+  <button class="filter-pill" onclick="setFilter('Romance',this)">Romance</button>
+  <button class="filter-pill" onclick="setFilter('Punjabi',this)">Punjabi</button>
+  <button class="filter-pill" onclick="setFilter('Comedy',this)">Comedy</button>
+</div>
+
+<!-- MOVIES GRID -->
+<div class="movies-grid" id="moviesGrid"></div>
+
+<!-- ══════════════════════════════════════════
+     CLICK-AD BOX — appears when user clicks a movie.
+     Paste your ad code inside .click-ad-zone below.
+══════════════════════════════════════════ -->
+<div id="clickAdBox" style="position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:linear-gradient(160deg,#0f0f1e,#080812);border:1px solid rgba(59,130,246,.3);border-radius:18px;padding:20px;max-width:360px;width:100%;position:relative;animation:modalIn .3s cubic-bezier(.34,1.56,.64,1)">
+    <button onclick="closeClickAd()" style="position:absolute;top:10px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">&#215;</button>
+    <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:10px;text-align:center">Advertisement</div>
+    <div class="click-ad-zone" style="min-height:120px;display:flex;align-items:center;justify-content:center">
+      <div id="ad-click"></div>
+    </div>
+    <button onclick="closeClickAd()" style="margin-top:14px;width:100%;padding:10px;border-radius:8px;border:none;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;font-size:.85rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Watch Now &#9654;</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════════
+     AD SLOT #4 — Sticky bottom banner.
+     Paste your sticky/footer banner ad here.
+══════════════════════════════════════════ -->
+<div id="stickyAd">
+  <button id="stickyAdClose" onclick="document.getElementById('stickyAd').style.display='none'">&#215;</button>
+  <div id="ad-sticky"></div>
+</div>
+
+<script src="movies.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ══════════════════════════════════════
+   SETTINGS — edit these if needed
+══════════════════════════════════════ */
+var TIMED_AD_MIN  = 5;           // minutes between popup ad boxes
+
+/* ── Merge admin-added movies from localStorage ── */
+try {
+  var adminMovies = JSON.parse(localStorage.getItem('_nx_admin_movies') || '[]');
+  if(adminMovies.length) MOVIES = MOVIES.concat(adminMovies);
+} catch(e){}
+
+/* ── Timed ad box ── */
+var _adTimer = null;
+window.closeTimedAd = function(){
+  document.getElementById('timedAdBox').classList.remove('show');
+  scheduleAd();
+};
+function scheduleAd(){
+  clearTimeout(_adTimer);
+  _adTimer = setTimeout(function(){
+    document.getElementById('timedAdBox').classList.add('show');
+  }, TIMED_AD_MIN * 60 * 1000);
+}
+scheduleAd();
+
+/* ── Nav drawer ── */
+var _navOpen = false;
+window.toggleNav = function(){
+  _navOpen ? window.closeNav() : openNav();
+};
+function openNav(){
+  var d = document.getElementById('navDrawer');
+  var o = document.getElementById('navOverlay');
+  d.classList.remove('closing','open');
+  d.classList.add('opening');
+  o.classList.add('show');
+  document.getElementById('hamBtn').classList.add('open');
+  _navOpen = true;
+  setTimeout(function(){ d.classList.remove('opening'); d.classList.add('open'); }, 480);
+}
+window.closeNav = function(){
+  if(!_navOpen) return;
+  var d = document.getElementById('navDrawer');
+  d.classList.remove('open','opening');
+  d.classList.add('closing');
+  document.getElementById('navOverlay').classList.remove('show');
+  document.getElementById('hamBtn').classList.remove('open');
+  _navOpen = false;
+  setTimeout(function(){ d.classList.remove('closing'); }, 350);
+};
+
+/* ── Genre filter ── */
+var _genre = '';
+window.setFilter = function(g, btn){
+  _genre = g;
+  document.querySelectorAll('.filter-pill').forEach(function(p){ p.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+  document.getElementById('moviesSearch').value = '';
+  renderGrid();
+};
+
+/* ── Click-ad box ── */
+var _pendingSlug = null;
+window.closeClickAd = function(){
+  document.getElementById('clickAdBox').style.display = 'none';
+  if(!_pendingSlug) return;
+  var m = MOVIES.find(function(x){ return x.slug === _pendingSlug; });
+  _pendingSlug = null;
+  if(!m) return;
+  if(m.type === 'series'){
+    window.location.href = 'player-series.html?slug=' + encodeURIComponent(m.slug);
+  } else {
+    window.location.href = 'player-movie.html?slug=' + encodeURIComponent(m.slug);
+  }
+};
+
+/* ── Open movie — show ad box first ── */
+function openMovie(slug){
+  _pendingSlug = slug;
+  document.getElementById('clickAdBox').style.display = 'flex';
+}
+
+/* ── Render grid ── */
+var BADGE_LABELS = { hot:'HOT', 'new':'NEW', top10:'TOP 10', recent:'RECENT' };
+
+window.renderGrid = function(){
+  var q  = (document.getElementById('moviesSearch').value || '').trim().toLowerCase();
+  var list = MOVIES.filter(function(m){
+    var okQ = !q || m.title.toLowerCase().includes(q) ||
+              (m.genres||[]).join(' ').toLowerCase().includes(q) ||
+              String(m.year).includes(q);
+    var okG = !_genre ||
+              (m.genres||[]).some(function(g){ return g.toLowerCase().includes(_genre.toLowerCase()); }) ||
+              (m.genre||'').toLowerCase().includes(_genre.toLowerCase());
+    return okQ && okG;
+  });
+
+  var grid = document.getElementById('moviesGrid');
+  grid.innerHTML = '';
+
+  if(!list.length){
+    var em = document.createElement('div');
+    em.className = 'empty-state';
+    em.innerHTML = '<div style="font-size:2rem">&#127916;</div><p>No movies found. Try a different search.</p>';
+    grid.appendChild(em);
+    return;
+  }
+
+  list.forEach(function(m, i){
+
+    /* ══════════════════════════════════════
+       AD SLOT #5 — Mid-grid ad.
+       Uncomment the block below to show a
+       banner ad after every 6 movie cards.
+    ══════════════════════════════════════ */
+    /*
+    if(i > 0 && i % 6 === 0){
+      var adDiv = document.createElement('div');
+      adDiv.className = 'ad-mid-slot';
+      adDiv.innerHTML = '<!-- paste your mid-grid ad script here -->';
+      grid.appendChild(adDiv);
+    }
+    */
+
+    /* Movie card */
+    var card = document.createElement('div');
+    card.className = 'movie-grid-card';
+
+    /* Thumb */
+    var thumb = document.createElement('div');
+    thumb.className = 'movie-thumb';
+    thumb.style.setProperty('--c1', m.c1 || '#1a1a3a');
+    thumb.style.setProperty('--c2', m.c2 || '#0a0a1a');
+
+    var bg = document.createElement('div');
+    bg.className = 'movie-thumb-bg';
+    thumb.appendChild(bg);
+
+    if(m.poster){
+      var img = document.createElement('img');
+      img.src = m.poster;
+      img.alt = '';
+      img.loading = 'lazy';
+      img.onerror = function(){ this.style.display='none'; };
+      thumb.appendChild(img);
+    }
+
+    if(m.badge && BADGE_LABELS[m.badge]){
+      var bdg = document.createElement('div');
+      bdg.className = 'movie-badge badge-' + m.badge;
+      bdg.textContent = BADGE_LABELS[m.badge];
+      thumb.appendChild(bdg);
+    }
+
+    if(m.match){
+      var mt = document.createElement('div');
+      mt.className = 'movie-match';
+      mt.textContent = m.match + '%';
+      thumb.appendChild(mt);
+    }
+
+    card.appendChild(thumb);
+
+    /* Info */
+    var info = document.createElement('div');
+    info.className = 'movie-card-info';
+
+    var titleEl = document.createElement('div');
+    titleEl.className = 'movie-card-title';
+    titleEl.textContent = m.title || '';
+    info.appendChild(titleEl);
+
+    var sub = document.createElement('div');
+    sub.className = 'movie-card-sub';
+    sub.textContent = (m.year || '') + (m.type === 'series' ? ' \u2022 Series' : '');
+    info.appendChild(sub);
+
+    card.appendChild(info);
+
+    card.addEventListener('click', (function(slug){ return function(){ openMovie(slug); }; })(m.slug));
+    grid.appendChild(card);
+  });
+};
+
+/* ── Load all ads dynamically after page paints (non-blocking) ── */
+function injectSrc(src){
+  var s=document.createElement('script');s.src=src;s.async=true;document.head.appendChild(s);
+}
+function injectBanner(elId,key,w,h){
+  var el=document.getElementById(elId);if(!el)return;
+  var s1=document.createElement('script');
+  s1.textContent="atOptions={'key':'"+key+"','format':'iframe','height':"+h+",'width':"+w+",'params':{}};";
+  document.head.appendChild(s1);
+  var s2=document.createElement('script');s2.src='https://www.highperformanceformat.com/'+key+'/invoke.js';
+  el.appendChild(s2);
+}
+function injectNative(elId,src){
+  var el=document.getElementById(elId);if(!el)return;
+  var s=document.createElement('script');s.async=true;s.setAttribute('data-cfasync','false');s.src=src;
+  var d=document.createElement('div');d.id='container-5d30ae14589b937999345df0d56b9ba3';
+  el.appendChild(s);el.appendChild(d);
+}
+function loadAds(){
+  injectSrc('https://pl30240799.effectivecpmnetwork.com/23/8d/cd/238dcd70f8cbfc81dd74f65369abc92a.js');
+  injectSrc('https://pl30240802.effectivecpmnetwork.com/b0/95/10/b09510ec359e0ff562a8bb5af6464022.js');
+  setTimeout(function(){ injectBanner('ad-sticky','6b579cacb090fc12569f1a5568c4dd84',320,50); },0);
+  setTimeout(function(){ injectBanner('ad-search','9757e57ea496a4bdbc73b0936ea66774',728,90); },200);
+  setTimeout(function(){ injectBanner('ad-timed','e15ca0b69c81925aa1bf05f4ceb1d419',300,250); },400);
+  setTimeout(function(){ injectBanner('ad-click','e15ca0b69c81925aa1bf05f4ceb1d419',300,250); },600);
+  injectNative('ad-click','https://pl30240800.effectivecpmnetwork.com/5d30ae14589b937999345df0d56b9ba3/invoke.js');
+}
+
+/* ── Init ── */
+window.addEventListener('DOMContentLoaded', function(){
+  renderGrid();
+  setTimeout(function(){
+    var l = document.getElementById('nx-loader');
+    if(l){ l.classList.add('hidden'); setTimeout(function(){ l.style.display='none'; },450); }
+    loadAds();
+  }, 800);
+});
+
+})();
+</script>
+
+</body>
+</html>

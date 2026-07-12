@@ -19,7 +19,7 @@ var MOVIES = [
     badge: "hot", genres: ["Drama","funny"],
     genre: "drama,history", rating: "",
     c1: "#1a0a2e", c2: "#2e1a4e", poster: "dhamaal.jpg",
-    desc: ""    tier: "free",
+    desc: ""  ,  tier: "free",
     /* Bunny.net Video ID — paste your video ID below */
     bunnyVideoId: "18e27a95-b19c-4cce-b014-552c5de7eb70",
     downloadLink: ""

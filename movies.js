@@ -18,7 +18,7 @@ var MOVIES = [
     title: "Dhamaall 4", year: 2022, dur: "2h 36m", cert: "A 18+", match: 98,
     badge: "hot", genres: ["Drama","funny"],
     genre: "drama,history", rating: "",
-    c1: "#1a0a2e", c2: "#2e1a4e", poster: "dhamaal.jpg",
+    c1: "#1a0a2e", c2: "#2e1a4e", poster: "dhamaal.WEBP",
     desc: ""  ,  tier: "free",
     /* Bunny.net Video ID — paste your video ID below */
     bunnyVideoId: "18e27a95-b19c-4cce-b014-552c5de7eb70",

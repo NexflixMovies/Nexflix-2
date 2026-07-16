@@ -1,5 +1,18 @@
 var MOVIES = [
 
+    /* ─── MOVIE: ikka ─── */
+  {
+    type: "movie", slug: "ikka",
+    title: "Ikka", year: 2022, dur: "2h 36m", cert: "A 18+", match: 98,
+    badge: "hot", genres: ["Drama","action"],
+    genre: "drama,history", rating: "",
+    c1: "#1a0a2e", c2: "#2e1a4e", poster: "ikka.jpg",
+    desc: ""  ,  tier: "free",
+    /* Bunny.net Video ID — paste your video ID below */
+    bunnyVideoId: "88fe7f7e-9841-4e22-b18a-eb296f48d385",
+    downloadLink: ""
+  },
+  
   /* ─── MOVIE: Punjab95 (Satluj) ─── */
   {
     type: "movie", slug: "satluj",
@@ -35,19 +48,8 @@ var MOVIES = [
     /* Bunny.net Video ID — paste your video ID below */
     bunnyVideoId: "900300d1-16cd-43c6-b8cf-b50dd57a7e8c",
     downloadLink: ""
-  }, 
-  /* ─── MOVIE: ikka ─── */
-  {
-    type: "movie", slug: "ikka",
-    title: "Ikka", year: 2022, dur: "2h 36m", cert: "A 18+", match: 98,
-    badge: "hot", genres: ["Drama","action"],
-    genre: "drama,history", rating: "",
-    c1: "#1a0a2e", c2: "#2e1a4e", poster: "ikka.jpg",
-    desc: ""  ,  tier: "free",
-    /* Bunny.net Video ID — paste your video ID below */
-    bunnyVideoId: "88fe7f7e-9841-4e22-b18a-eb296f48d385",
-    downloadLink: ""
   }
+
 
 ];
 

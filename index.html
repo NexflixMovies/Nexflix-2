@@ -60,5 +60,42 @@
       </section>
     </main>
   </div>
+  <script>
+  let timeLeft = 3;
+
+  const timer = document.createElement("div");
+  timer.id = "redirectTimer";
+  timer.innerHTML = `Redirecting in <strong>${timeLeft}</strong>s...`;
+
+  document.querySelector("main").appendChild(timer);
+
+  const style = document.createElement("style");
+  style.textContent = `
+    #redirectTimer {
+      margin-top: 18px;
+      color: #778095;
+      font: 11px monospace;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    #redirectTimer strong {
+      color: #e9b967;
+      font-size: 16px;
+    }
+  `;
+  document.head.appendChild(style);
+
+  const countdown = setInterval(() => {
+    timeLeft--;
+
+    timer.innerHTML = `Redirecting in <strong>${timeLeft}</strong>s...`;
+
+    if (timeLeft <= 0) {
+      clearInterval(countdown);
+      window.location.href = "wait.html";
+    }
+  }, 1000);
+</script>
 </body>
 </html>

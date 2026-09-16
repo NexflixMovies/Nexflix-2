@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Movie — 15 सेकंड प्रतीक्षा करें</title>
+  <meta name="description" content="मूवी पाने के लिए 15 सेकंड प्रतीक्षा करें।">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+    :root{color-scheme:dark;font-family:Inter,Arial,sans-serif;background:#080b14;color:#f3ecd9}
+    *{box-sizing:border-box}body{margin:0;min-width:320px;background:#080b14}
+    .page{position:relative;width:min(100%,430px);min-height:100vh;margin:auto;overflow:hidden;border-inline:1px solid #20283b;background:radial-gradient(circle at 50% -8%,#d7a75e1f,transparent 33%),linear-gradient(155deg,#151a2b,#080b14);box-shadow:0 0 80px #02030a}
+    .page:before{content:"";position:absolute;z-index:5;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#e9b967,#58b39e,transparent);box-shadow:0 0 16px #e9b96766}
+    .grain{position:fixed;inset:0;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+    header{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:20px}
+    .brand{display:flex;align-items:center;gap:12px;font:600 14px 'Space Grotesk',sans-serif;letter-spacing:.22em;color:#f3ecd9;text-decoration:none}
+    .brand-mark{display:grid;place-items:center;width:36px;height:36px;border:1px solid #d7a75e80;border-radius:50%;color:#e9b967;background:#d7a75e1a}
+    .ready{font:10px monospace;letter-spacing:.18em;color:#778095}.ready i{display:inline-block;width:6px;height:6px;margin-right:8px;border-radius:50%;background:#58b39e}
+    main{position:relative;z-index:1;padding:36px 20px 48px;text-align:center}
+    .eyebrow{display:flex;align-items:center;justify-content:center;gap:8px;font:10px monospace;letter-spacing:.2em;text-transform:uppercase;color:#d7a75e}
+    h1{max-width:340px;margin:28px auto 0;font:600 clamp(2.05rem,10vw,3.5rem)/1.12 'Space Grotesk',sans-serif;letter-spacing:-.045em}
+    h1 span{color:#e9b967}
+    .timer-wrap{position:relative;display:grid;place-items:center;width:244px;aspect-ratio:1;margin:40px auto 0;border-radius:50%;padding:9px;background:conic-gradient(from -90deg,#e9b967 0%,#20283b 0% 100%);box-shadow:0 0 0 8px #d7a75e0a,0 24px 80px #02030a}
+    .timer-wrap:before{content:"";position:absolute;inset:-8px;border:1px solid #e9b96738;border-radius:50%;animation:halo 2.8s ease-in-out infinite}
+    .timer-wrap:after{content:"";position:absolute;inset:23px;border:1px solid #e9b9672e;border-radius:50%;box-shadow:inset 0 0 22px #e9b9670f}
+    .orbit{position:absolute;z-index:3;border:1px solid #e9b9671f;border-radius:50%;pointer-events:none}
+    .orbit.one{inset:-16px;animation:spin 8s linear infinite}.orbit.two{inset:-29px;border-color:#58b39e2b;animation:reverse-spin 12s linear infinite}
+    .dot{position:absolute;top:50%;right:-3px;width:6px;height:6px;border-radius:50%;background:#e9b967;box-shadow:0 0 12px #e9b967}
+    .two .dot{right:auto;left:-3px;width:5px;height:5px;background:#58b39e;box-shadow:0 0 12px #58b39e}
+    .spark{position:absolute;z-index:4;width:5px;height:5px;border-radius:50%;background:#f3ecd9;box-shadow:0 0 14px #f3ecd9;animation:spark 2.4s ease-in-out infinite}
+    .spark.one{top:12%;left:24%;animation-delay:-.4s}.spark.two{top:72%;right:9%;background:#58b39e;animation-delay:-1.1s}.spark.three{bottom:12%;left:15%;width:4px;height:4px;animation-delay:-1.8s}
+    .timer-core{position:relative;z-index:1;display:grid;place-items:center;align-content:center;width:100%;aspect-ratio:1;overflow:hidden;border:1px solid #394056;border-radius:50%;background:radial-gradient(circle,#222b42 0 54%,#111728 100%)}
+    .shimmer{position:absolute;inset:-30% 20%;background:linear-gradient(90deg,transparent,#f3ecd91c,transparent);transform:translateX(-130%) rotate(18deg);animation:shimmer 3.8s ease-in-out infinite}
+    .number{position:relative;font:500 clamp(3.5rem,8vw,5.75rem)/1 monospace;letter-spacing:-.08em;animation:number-in .35s cubic-bezier(.22,1,.36,1)}
+    .seconds{position:relative;margin-top:12px;font:9px monospace;letter-spacing:.28em;text-transform:uppercase;color:#778095}
+    .status{margin-top:24px;font-size:14px;color:#9da6b8}.progress{height:4px;margin:36px auto 0;overflow:hidden;border-radius:99px;background:#20283b}.progress span{display:block;height:100%;width:0;border-radius:inherit;background:#d7a75e;box-shadow:0 0 14px #e9b967;transition:width 1s linear;position:relative}.progress span:after{content:"";position:absolute;inset:0;width:35%;background:#fff6;animation:sheen 1.5s ease-in-out infinite}
+    .percent{margin-top:12px;font:9px monospace;letter-spacing:.18em;color:#596276}.fallback{display:inline-flex;align-items:center;gap:8px;margin-top:28px;color:#9da6b8;font-size:12px;text-decoration:none}.fallback:hover{color:#e9b967}
+    .ads{display:grid;gap:12px;margin-top:40px}.ad{position:relative;display:flex;align-items:center;justify-content:center;min-height:92px;overflow:hidden;padding:10px;border:1px dashed #394056;border-radius:12px;background:#0d1220b8;color:#778095}.ad.wide{min-height:120px}.ad.box{min-height:250px}.ad iframe,.ad img{display:block;max-width:100%;border:0}.ad-fallback{position:absolute;inset:0;display:grid;place-items:center;font:9px monospace;letter-spacing:.16em;text-transform:uppercase;color:#667087}.sponsor{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;border-radius:999px;background:#e9b9671f;color:#e9b967;font:10px monospace;letter-spacing:.18em;text-decoration:none;text-transform:uppercase}
+    @keyframes halo{0%,100%{transform:scale(.96);opacity:.42}50%{transform:scale(1.04);opacity:.9}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes reverse-spin{to{transform:rotate(-360deg)}}@keyframes spark{0%,100%{opacity:.2;transform:scale(.65)}50%{opacity:1;transform:scale(1.25)}}@keyframes shimmer{0%{transform:translateX(-130%) rotate(18deg);opacity:0}25%,70%{opacity:.7}100%{transform:translateX(130%) rotate(18deg);opacity:0}}@keyframes number-in{from{opacity:.2;transform:translateY(7px) scale(.92)}to{opacity:1;transform:none}}@keyframes sheen{from{transform:translateX(-120%)}to{transform:translateX(220%)}}
+    @media(min-width:640px){body{background:#080b14}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="grain"></div>
+    <header><a class="brand" href="index.html"><span class="brand-mark">▣</span>MOVIE</a><span class="ready"><i></i>तैयार</span></header>
+    <main>
+      <div class="eyebrow">◷ &nbsp;कृपया प्रतीक्षा करें</div>
+      <h1>मूवी पाने के लिए<br><span>15 सेकंड</span><br><span>प्रतीक्षा करें</span></h1>
+      <div class="timer-wrap" id="timer">
+        <div class="orbit one"><span class="dot"></span></div><div class="orbit two"><span class="dot"></span></div>
+        <span class="spark one"></span><span class="spark two"></span><span class="spark three"></span>
+        <div class="timer-core"><div class="shimmer"></div><div class="number" id="number" aria-live="polite">15</div><div class="seconds">सेकंड</div></div>
+      </div>
+      <div class="status" id="status">थोड़ा इंतज़ार करें...</div>
+      <div class="progress"><span id="progress"></span></div>
+      <div class="percent" id="percent">0%</div>
+      <a class="fallback" href="https://t.me/+CfPhckSNWCI1YjQ1" target="_blank" rel="noreferrer">लिंक न खुले तो यहाँ क्लिक करें ↗</a>
+      <section class="ads" aria-label="Advertisements">
+        <div class="ad"><a class="sponsor" href="https://www.profitableratecpmnetwork.com/fum3972774?key=e807f9ca18c2d0d6f36ad54cc01d613e" target="_blank" rel="noreferrer">Sponsored</a></div>
+        <div class="ad"><span class="ad-fallback">Sponsored · network one</span><script src="https://pl30240799.profitableratecpmnetwork.com/23/8d/cd/238dcd70f8cbfc81dd74f65369abc92a.js"></script></div>
+        <div class="ad"><span class="ad-fallback">Sponsored · network two</span><div id="container-5d30ae14589b937999345df0d56b9ba3"></div><script async data-cfasync="false" src="https://pl30240800.profitableratecpmnetwork.com/5d30ae14589b937999345df0d56b9ba3/invoke.js"></script></div>
+        <div class="ad"><span class="ad-fallback">Sponsored · network three</span><script src="https://pl30240802.profitableratecpmnetwork.com/b0/95/10/b09510ec359e0ff562a8bb5af6464022.js"></script></div>
+        <div class="ad wide"><span class="ad-fallback">Sponsored · banner</span><script>atOptions={key:'9757e57ea496a4bdbc73b0936ea66774',format:'iframe',height:90,width:728,params:{}};</script><script src="https://www.highrevenueformat.com/9757e57ea496a4bdbc73b0936ea66774/invoke.js"></script></div>
+        <div class="ad box"><span class="ad-fallback">Sponsored · box</span><script>atOptions={key:'e15ca0b69c81925aa1bf05f4ceb1d419',format:'iframe',height:250,width:300,params:{}};</script><script src="https://www.highrevenueformat.com/e15ca0b69c81925aa1bf05f4ceb1d419/invoke.js"></script></div>
+        <div class="ad"><span class="ad-fallback">Sponsored · mobile banner</span><script>atOptions={key:'2924be8f59e1a39eb1659e53371fd86e',format:'iframe',height:60,width:468,params:{}};</script><script src="https://www.highrevenueformat.com/2924be8f59e1a39eb1659e53371fd86e/invoke.js"></script></div>
+        <div class="ad"><span class="ad-fallback">Sponsored · extra banner</span><script>atOptions={key:'2924be8f59e1a39eb1659e53371fd86e',format:'iframe',height:60,width:468,params:{}};</script><script src="https://www.highrevenueformat.com/2924be8f59e1a39eb1659e53371fd86e/invoke.js"></script></div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const total=15, destination='https://t.me/+CfPhckSNWCI1YjQ1'; let left=total;
+    const number=document.getElementById('number'), progress=document.getElementById('progress'), percent=document.getElementById('percent'), status=document.getElementById('status');
+    const tick=()=>{left-=1;number.textContent=String(Math.max(left,0)).padStart(2,'0');const done=((total-left)/total)*100;progress.style.width=Math.min(done,100)+'%';percent.textContent=Math.round(Math.min(done,100))+'%';if(left<=0){status.textContent='चैनल खोला जा रहा है';clearInterval(timer);window.location.assign(destination)}};
+    const timer=setInterval(tick,1000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Movie — आपकी मूवी तैयार है</title>
+  <meta name="description" content="मूवी देखने के लिए नीचे दिए गए बटन पर क्लिक करें।">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+    :root{color-scheme:dark;font-family:Inter,Arial,sans-serif;background:#080b14;color:#f3ecd9}
+    *{box-sizing:border-box}body{margin:0;min-width:320px;background:#080b14}
+    .page{position:relative;width:min(100%,430px);min-height:100vh;margin:auto;overflow:hidden;border-inline:1px solid #20283b;background:radial-gradient(circle at 50% -8%,#d7a75e1f,transparent 33%),linear-gradient(155deg,#151a2b,#080b14);box-shadow:0 0 80px #02030a}
+    .page:before{content:"";position:absolute;z-index:5;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#e9b967,#58b39e,transparent);box-shadow:0 0 16px #e9b96766}
+    .grain{position:fixed;inset:0;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+    header{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:20px}
+    .brand{display:flex;align-items:center;gap:12px;font:600 14px 'Space Grotesk',sans-serif;letter-spacing:.22em}
+    .brand-mark{display:grid;place-items:center;width:36px;height:36px;border:1px solid #d7a75e80;border-radius:50%;color:#e9b967;background:#d7a75e1a}
+    .ready{font:10px monospace;letter-spacing:.18em;color:#778095}.ready i{display:inline-block;width:6px;height:6px;margin-right:8px;border-radius:50%;background:#58b39e}
+    main{position:relative;z-index:1;padding:40px 20px 48px;text-align:center}
+    .eyebrow,.ad-label{font:10px monospace;letter-spacing:.22em;text-transform:uppercase;color:#d7a75e}
+    h1{margin:20px 0 0;font:600 clamp(2.25rem,11vw,4rem)/1.08 'Space Grotesk',sans-serif;letter-spacing:-.045em}
+    h1 span{color:#e9b967}
+    .cta{display:flex;align-items:center;justify-content:center;gap:16px;width:100%;margin-top:36px;padding:16px 22px;border:0;border-radius:999px;background:#e9b967;color:#171827;font:600 14px 'Space Grotesk',sans-serif;text-decoration:none;box-shadow:0 12px 30px #e9b9672e;transition:.25s transform,.25s background}
+    .cta:hover{transform:translateY(-3px);background:#f3c879}.cta b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#1718271c}
+    .ads{display:grid;gap:12px;margin-top:34px}.ad{position:relative;display:flex;align-items:center;justify-content:center;min-height:92px;overflow:hidden;padding:10px;border:1px dashed #394056;border-radius:12px;background:#0d1220b8;color:#778095}
+    .ad.wide{min-height:120px}.ad.box{min-height:250px}.ad iframe,.ad img{display:block;max-width:100%;border:0}.ad-fallback{position:absolute;inset:0;display:grid;place-items:center;font:9px monospace;letter-spacing:.16em;text-transform:uppercase;color:#667087}
+    .sponsor{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;border-radius:999px;background:#e9b9671f;color:#e9b967;font:10px monospace;letter-spacing:.18em;text-decoration:none;text-transform:uppercase}
+    @media(min-width:640px){body{background:#080b14}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="grain"></div>
+    <header>
+      <a class="brand" href="index.html"><span class="brand-mark">▣</span>MOVIE</a>
+      <span class="ready"><i></i>तैयार</span>
+    </header>
+    <main>
+      <div class="eyebrow">आपकी मूवी तैयार है</div>
+      <h1>मूवी का आनंद<br>लेने के लिए<br><span>नीचे क्लिक करें</span></h1>
+      <a class="cta" href="wait.html">मूवी देखने के लिए क्लिक करें <b>↗</b></a>
+      <section class="ads" aria-label="Advertisements">
+        <div class="ad"><a class="sponsor" href="https://www.profitableratecpmnetwork.com/fum3972774?key=e807f9ca18c2d0d6f36ad54cc01d613e" target="_blank" rel="noreferrer">Sponsored</a></div>
+        <div class="ad"><span class="ad-fallback">Sponsored · network one</span><script src="https://pl30240799.profitableratecpmnetwork.com/23/8d/cd/238dcd70f8cbfc81dd74f65369abc92a.js"></script></div>
+        <div class="ad"><span class="ad-fallback">Sponsored · network two</span><div id="container-5d30ae14589b937999345df0d56b9ba3"></div><script async data-cfasync="false" src="https://pl30240800.profitableratecpmnetwork.com/5d30ae14589b937999345df0d56b9ba3/invoke.js"></script></div>
+        <div class="ad"><span class="ad-fallback">Sponsored · network three</span><script src="https://pl30240802.profitableratecpmnetwork.com/b0/95/10/b09510ec359e0ff562a8bb5af6464022.js"></script></div>
+        <div class="ad wide"><span class="ad-fallback">Sponsored · banner</span><script>atOptions={key:'9757e57ea496a4bdbc73b0936ea66774',format:'iframe',height:90,width:728,params:{}};</script><script src="https://www.highrevenueformat.com/9757e57ea496a4bdbc73b0936ea66774/invoke.js"></script></div>
+        <div class="ad box"><span class="ad-fallback">Sponsored · box</span><script>atOptions={key:'e15ca0b69c81925aa1bf05f4ceb1d419',format:'iframe',height:250,width:300,params:{}};</script><script src="https://www.highrevenueformat.com/e15ca0b69c81925aa1bf05f4ceb1d419/invoke.js"></script></div>
+        <div class="ad"><span class="ad-fallback">Sponsored · mobile banner</span><script>atOptions={key:'2924be8f59e1a39eb1659e53371fd86e',format:'iframe',height:60,width:468,params:{}};</script><script src="https://www.highrevenueformat.com/2924be8f59e1a39eb1659e53371fd86e/invoke.js"></script></div>
+        <div class="ad"><span class="ad-fallback">Sponsored · extra banner</span><script>atOptions={key:'2924be8f59e1a39eb1659e53371fd86e',format:'iframe',height:60,width:468,params:{}};</script><script src="https://www.highrevenueformat.com/2924be8f59e1a39eb1659e53371fd86e/invoke.js"></script></div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
